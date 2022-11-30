@@ -1,0 +1,161 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Gateway API'
+  description: Describe the resources and connectivity of the Gateway
+paths:
+  /connectivity/ethernet:
+    get:
+      summary: Get the state of the Ethernet interface
+      responses:
+        '200':
+          description: Return the state of the Ethernet interface
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ethernet'
+  /connectivity/wifi:
+    get:
+      summary: Get the state of the Wi-Fi interface
+      responses:
+        '200':
+          description: Return the state of the Wi-Fi interface
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/wifi'
+  /connectivity/lte:
+    get:
+      summary: Get the state of the LTE interface
+      responses:
+        '200':
+          description: Return the state of the LTE interface
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/lte'
+  /resources:
+    get:
+      summary: Get the resources of the gateway (RAM/CPU/HDD)
+      responses:
+        '200':
+          description: Return the resources information of the gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resources'
+components:
+  schemas:
+    ethernet:
+      description: The state of the Ethernet interface
+      type: object
+      required:
+        - isEnabled
+        - mode
+      properties:
+        isEnabled: 
+          type: boolean
+        mode: 
+          type: string
+          enum: 
+            - WAN
+            - LAN
+    wifi:
+      description: The state of the Wi-Fi interface
+      type: object
+      required:
+        - isEnabled
+        - mode
+        - type
+        - isConnected
+        - quality
+        - rssi
+      properties:
+        isEnabled: 
+          type: boolean
+        mode: 
+          type: string
+          enum: 
+            - WAN
+            - LAN
+        type: 
+          type: string
+          enum: 
+            - AP
+            - STA
+          description: AP = Access Point ; STA = Station
+        isConnected:
+          type: boolean
+        quality:
+          type: string
+          enum:
+            - Excellent
+            - Good
+            - Bad
+            - Limit Range
+        rssi:
+          type: integer
+          maximum: 0
+          minimum: -90
+          description: Signal strength in dBm
+    lte:
+      description: The state of the LTE interface
+      type: object
+      required:
+        - isEnabled
+        - isSimCardValid
+        - quality
+        - rssi
+      properties:
+        isEnabled: 
+          type: boolean
+        isSimCardValid:
+          type: boolean
+        quality:
+          type: string
+          enum:
+            - Excellent
+            - Good
+            - Bad
+            - Limit Range
+        rssi:
+          type: integer
+          maximum: 0
+          minimum: -90
+          description: Signal strength in dBm
+    resources:
+      type: object
+      required:
+        - availableRam
+        - cpu1
+        - cpu2
+        - cpuAverage
+        - cpuAlert
+        - storage
+      properties:
+        availableRam:
+          type: integer
+          minimum: 0
+          description: Available RAM in MB
+        cpu1:
+          type: string
+          enum: 
+            - low
+            - normal
+            - high
+        cpu2:
+          type: string
+          enum: 
+            - low
+            - normal
+            - high
+        cpuAverage:
+          type: string
+          enum: 
+            - low
+            - normal
+            - high
+          description: Average CPU utilization (in real time)
+        cpuAlert:
+          type: boolean
+          description: true if the CPU1 and CPU2 utilization is above 80% since last minute
