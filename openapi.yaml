@@ -44,6 +44,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/resources'
+  /security:
+    get:
+      summary: Get the VPN status of the gateway
+      responses:
+        '200':
+          description: Return the information regarding the VPN connection of the gateway to the cloud
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/security'
+        '503':
+          description: Service unavailable, security module not activated
+  /tracking:
+    get:
+      summary: Get the geolocation information of the gateway
+      responses:
+        '200':
+          description: Return the information regarding the geolocation of the gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tracking'
+        '503':
+          description: Service unavailable, tracking module not activated
 components:
   schemas:
     ethernet:
@@ -159,3 +183,47 @@ components:
         cpuAlert:
           type: boolean
           description: true if the CPU1 and CPU2 utilization is above 80% since last minute
+    security:
+      type: object
+      required:
+        - vpnConnection
+        - certificateStatus
+        - state
+      properties:
+        vpnConnection:
+          type: string
+          enum: 
+            - established
+            - unreachable
+            - unauthorized
+        certificateStatus:
+          type: string
+          enum: 
+            - valid
+            - expired
+            - revoked
+        isEnabled:
+          type: boolean
+          description: true if the gateway is allowed to communicate with the virtual network (manual activation)
+    tracking:
+      type: object
+      required:
+        - status
+        - latitude
+        - longitude
+      properties:
+        status:
+          type: string
+          enum: 
+            - ok
+            - outOfRange
+        latitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
