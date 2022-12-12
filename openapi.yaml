@@ -159,7 +159,7 @@ components:
         availableRam:
           type: integer
           minimum: 0
-          description: Available RAM in MB
+          description: RAM available in MB
         cpu1:
           type: string
           enum: 
@@ -182,6 +182,10 @@ components:
         cpuAlert:
           type: boolean
           description: true if the CPU1 and CPU2 utilization is above 80% since last minute
+        storage: 
+          type: integer
+          minimum: 0
+          description: Storage available in MB
     security:
       type: object
       required:
